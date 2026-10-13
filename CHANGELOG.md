@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.1](https://github.com/dirkwa/espos-nmea-gateway/compare/v0.1.0...v0.1.1) (2026-10-13)
+
+
+### Fixed
+
+* use GPIO 22 for CAN TX on the ESP32-P4 ([dd39670](https://github.com/dirkwa/espos-nmea-gateway/commit/dd39670cc2e67b026ec8a8fd9849d438085b2bf9))
+* use GPIO 22 for CAN TX on the ESP32-P4 ([1b797c3](https://github.com/dirkwa/espos-nmea-gateway/commit/1b797c387fcc79a2a5dead3addcc297216b87471))
+
 ## 0.1.0 (2026-10-13)
 
 
