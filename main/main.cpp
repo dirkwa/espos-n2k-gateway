@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: 2026 Dirk Wahrheit
  * SPDX-License-Identifier: Apache-2.0
  *
- * espos-n2k-gateway: CAN frames off the boat's NMEA 2000 bus, out over TCP in
+ * espos-nmea-gateway: CAN frames off the boat's NMEA 2000 bus, out over TCP in
  * candump ASCII, which signalk-server reads with canboatjs. Frames the server
  * sends back go onto the bus, unless the "can" settings say receive only.
  *
@@ -28,7 +28,7 @@
 
 namespace {
 
-const char* TAG = "n2k_gateway";
+const char* TAG = "nmea_gateway";
 
 /* NMEA 2000 is 250 kbit/s, and not negotiable: a device at the wrong rate
  * corrupts frames for everyone else by acknowledging at the wrong time. */
@@ -68,8 +68,8 @@ extern "C" void app_main(void) {
    * moment the transceiver sees traffic, server or not. */
   ESP_ERROR_CHECK(espos_start(nullptr));
 
-  gpio_num_t tx_pin = pin_from_config(ESPOS_CFG_CAN_TX_PIN, CONFIG_N2K_GW_CAN_TX_GPIO, true);
-  gpio_num_t rx_pin = pin_from_config(ESPOS_CFG_CAN_RX_PIN, CONFIG_N2K_GW_CAN_RX_GPIO, false);
+  gpio_num_t tx_pin = pin_from_config(ESPOS_CFG_CAN_TX_PIN, CONFIG_NMEA_GW_CAN_TX_GPIO, true);
+  gpio_num_t rx_pin = pin_from_config(ESPOS_CFG_CAN_RX_PIN, CONFIG_NMEA_GW_CAN_RX_GPIO, false);
   if (tx_pin != GPIO_NUM_NC && tx_pin == rx_pin) {
     ESP_LOGE(TAG, "CAN TX and RX are both GPIO %d", (int)tx_pin);
     tx_pin = rx_pin = GPIO_NUM_NC;

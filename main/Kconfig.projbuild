@@ -1,8 +1,8 @@
-menu "NMEA 2000 gateway"
+menu "NMEA gateway"
 
     # Defaults only: the "can" settings page overrides both at runtime, so a
     # board with other wiring needs no rebuild. -1 there means "use these".
-    config N2K_GW_CAN_TX_GPIO
+    config NMEA_GW_CAN_TX_GPIO
         int "Default CAN TX GPIO"
         default 32 if IDF_TARGET_ESP32
         default 20 if IDF_TARGET_ESP32P4
@@ -12,7 +12,7 @@ menu "NMEA 2000 gateway"
             -1. ESP32: the SH-ESP32 board. ESP32-P4: the Waveshare P4 boards.
             The others: GPIO 4, free on the common dev kits of those chips.
 
-    config N2K_GW_CAN_RX_GPIO
+    config NMEA_GW_CAN_RX_GPIO
         int "Default CAN RX GPIO"
         default 34 if IDF_TARGET_ESP32
         default 21 if IDF_TARGET_ESP32P4
