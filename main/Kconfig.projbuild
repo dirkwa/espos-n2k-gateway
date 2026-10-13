@@ -5,11 +5,12 @@ menu "NMEA gateway"
     config NMEA_GW_CAN_TX_GPIO
         int "Default CAN TX GPIO"
         default 32 if IDF_TARGET_ESP32
-        default 20 if IDF_TARGET_ESP32P4
+        default 22 if IDF_TARGET_ESP32P4
         default 4
         help
             GPIO wired to the CAN transceiver's TXD when the tx_pin setting is
-            -1. ESP32: the SH-ESP32 board. ESP32-P4: the Waveshare P4 boards.
+            -1. ESP32: the SH-ESP32 board. ESP32-P4: the CAN transceiver on the
+            Waveshare Touch-LCD-7B (TX 22, RX 21, as the P4 cockpit uses it).
             The others: GPIO 4, free on the common dev kits of those chips.
 
     config NMEA_GW_CAN_RX_GPIO

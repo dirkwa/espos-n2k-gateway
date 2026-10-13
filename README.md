@@ -53,7 +53,7 @@ the flash or PSRAM uses is refused, and the log says why.
 | ESP32 | GPIO 32 | GPIO 34 | the SH-ESP32 board, which has the transceiver on board |
 | ESP32-C5 | GPIO 4 | GPIO 5 | free on the Waveshare ESP32-C5 kit |
 | ESP32-S3, -C3, -C6 | GPIO 4 | GPIO 5 | free on the common dev kits |
-| ESP32-P4 | GPIO 20 | GPIO 21 | the Waveshare ESP32-P4 boards |
+| ESP32-P4 | GPIO 22 | GPIO 21 | the Waveshare ESP32-P4-WIFI6-Touch-LCD-7B, whose on-board CAN transceiver the P4 cockpit uses on these pins |
 
 Two things go wrong most often, and both look like a software fault:
 
