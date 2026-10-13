@@ -18,8 +18,10 @@ Wi-Fi.
   which the Waveshare boards they are released for carry.
 * **A CAN transceiver** between the board and the bus. The ESP32's CAN
   controller (TWAI) speaks 3.3 V logic and cannot drive the bus's differential
-  pair. An SN65HVD230 or TJA1051 module works; both run on 3.3 V. Some boards
-  have one on board (the SH-ESP32, for example).
+  pair. An SN65HVD230 (or SN65HVD231/232) module runs on 3.3 V and wires as
+  shown below. A TJA1051 needs 5 V on VCC; use the TJA1051T/3 variant, whose
+  VIO pin takes 3.3 V so its logic matches the ESP32's. Some boards have a
+  transceiver on board (the SH-ESP32, for example).
 * **A drop cable** to the backbone: an NMEA 2000 T-piece and a cable with a
   Micro-C connector, or a field-attachable connector.
 * **Power.** The bus carries 12 V on its NET-S/NET-C pins, but the board needs
@@ -32,7 +34,7 @@ Wi-Fi.
  ─────                 ───────────            ────────────────────
  CAN TX pin  ───────►  TXD (CTX)
  CAN RX pin  ◄───────  RXD (CRX)
- 3V3         ───────   VCC
+ 3V3         ───────   VCC  (SN65HVD230)
  GND         ───────   GND  ──────────────    NET-C (0 V, black)
                        CANH ──────────────    NET-H (white)
                        CANL ──────────────    NET-L (blue)
@@ -58,6 +60,14 @@ Two things go wrong most often, and both look like a software fault:
   own: remove it (or open its jumper) when the module hangs off a real
   backbone.
 * **TX and RX swapped.** The board's TX pin goes to the transceiver's TXD.
+
+Keep CAN off the chip's strapping pins, above all for RX: the transceiver
+holds RX high from the moment it has power, so it decides that pin's level
+while the chip boots, before the firmware runs. On the ESP32, GPIO 12 high at
+reset selects 1.8 V flash and a board with 3.3 V flash then does not start at
+all; GPIO 0, 2, 5 and 15 change how it boots. The other chips have their own
+strapping pins, listed in each chip's datasheet. No setting can undo a board
+that does not boot, so this is one to check before wiring.
 
 The bus runs at 250 kbit/s, which NMEA 2000 fixes; there is nothing to set.
 

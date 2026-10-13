@@ -199,8 +199,8 @@ jobs:
       #
       # It KEEPS older tags rather than holding only the newest, because this
       # job can run for an old tag at any time -- `workflow_dispatch` takes a
-      # tag, and there is no concurrency control -- and a run that published
-      # only its own tag would delete a newer release's images. Publishing is
+      # tag -- and a run that published only its own tag would delete a newer
+      # release's images. Publishing is
       # therefore additive, and the oldest are pruned below so the branch stays
       # bounded.
       - name: mirror the images where a browser can read them
@@ -225,8 +225,8 @@ jobs:
             echo "hosted flasher fetches them from raw.githubusercontent.com,"
             echo "which does send it."
             echo
-            echo "Force-pushed on every release; holds only the current one."
-            echo "The releases remain the archive."
+            echo "Force-pushed on every release; holds up to five releases,"
+            echo "always the one just published. The releases remain the archive."
           } > "$work/README.md"
 
           remote="https://x-access-token:${TOKEN}@github.com/${REPO}.git"
@@ -288,9 +288,8 @@ jobs:
           mkdir -p "$TAG"
           cp "$staged"/*.bin "$TAG/"
 
-          # Keep the branch bounded: newest KEEP tags by commit order, which is
-          # the order they were published in. Old firmware stays downloadable
-          # from its release; only the browser-readable copy is pruned.
+          # Keep the branch bounded. Old firmware stays downloadable from its
+          # release; only the browser-readable copy is pruned.
           # Keep the newest KEEP, and ALWAYS keep the tag this run publishes.
           # Without that exception, re-publishing an old tag while KEEP newer
           # ones already exist prunes the directory just written, and the step
@@ -321,12 +320,6 @@ jobs:
             echo "  https://raw.githubusercontent.com/${REPO}/release-assets/${TAG}/$(basename "$f")"
           done
 
-      # If attaching the assets fails after the mirror has published, the
-      # branch advertises images for a release that has none. Roll the mirror
-      # back to what it held before this run, so the two never disagree.
-      #
-      # Only ever on failure, and only for this tag: it re-pushes the snapshot
-      # taken before the mirror step, which is why that step records one.
       - uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3
         with:
           # Named explicitly: on a workflow_call there is no release event.
@@ -337,6 +330,12 @@ jobs:
           fail_on_unmatched_files: true
           files: dist/*.bin
 
+      # If attaching the assets fails after the mirror has published, the
+      # branch advertises images for a release that has none. Roll the mirror
+      # back to what it held before this run, so the two never disagree. It
+      # re-pushes the snapshot taken before the mirror step, which is why that
+      # step records one.
+      #
       # Any failure after the mirror pushed, not only a failed attach. The
       # narrower `steps.attach.outcome == 'failure'` missed the case it most
       # needed to catch: if the mirror step pushes and then fails on a later

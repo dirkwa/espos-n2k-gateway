@@ -117,17 +117,18 @@ jobs:
           if [ "$PRS" -gt 0 ]; then
             skip "track-espos-$TAG already has a PR."
           fi
-          if git ls-remote --exit-code --heads origin "track-espos-$TAG" >/dev/null; then
-            # A branch with no PR is what a run that failed after its push
-            # leaves behind. Nobody can have reviewed it, so start over.
-            echo "Removing track-espos-$TAG, left without a PR by an earlier run."
-            gh api -X DELETE "repos/$GITHUB_REPOSITORY/git/refs/heads/track-espos-$TAG"
-          fi
           # Never move backwards, or sideways, on its own: the pin may sit ahead
           # of the newest release on a commit from espOS main. A tag named by
           # hand bypasses this, so a deliberate rollback stays possible.
           if [ "$EXPLICIT" = no ] && ! git -C espos merge-base --is-ancestor "$PINNED" "$TARGET"; then
             skip "$TAG does not contain the pinned espOS commit $PINNED; not moving automatically."
+          fi
+          if git ls-remote --exit-code --heads origin "track-espos-$TAG" >/dev/null; then
+            # A branch with no PR is what a run that failed after its push
+            # leaves behind. Nobody can have reviewed it, so start over. Only
+            # here, once the run is sure to push the branch again.
+            echo "Removing track-espos-$TAG, left without a PR by an earlier run."
+            gh api -X DELETE "repos/$GITHUB_REPOSITORY/git/refs/heads/track-espos-$TAG"
           fi
           echo "skip=false" >> "$GITHUB_OUTPUT"
 

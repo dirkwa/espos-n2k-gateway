@@ -24,7 +24,7 @@ jobs:
   config-descriptor:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
           persist-credentials: false
@@ -48,7 +48,7 @@ jobs:
       # with a bare hash, espos_version.cmake rejects that and falls back to
       # version.txt, so every build between two releases claims to BE that
       # release; and the build log cannot say which espOS is in the image.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
           fetch-depth: 0
@@ -76,7 +76,7 @@ jobs:
       # right for CI: these images are never released. A real release must
       # restore the project key from a secret (espos/docs/ota.md) - a build
       # signed with a per-run key installs over USB and then rejects every OTA.
-      - uses: espressif/esp-idf-ci-action@v1
+      - uses: espressif/esp-idf-ci-action@9d38657f3d789ca759b2b37aaf5ceffbc42c4f0d # v1
         with:
           esp_idf_version: ${{ steps.idf.outputs.version }}
           target: ${{ matrix.target }}
