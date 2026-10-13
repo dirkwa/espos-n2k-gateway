@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# CI builds a five-target matrix, so each run is a fan-out. One run per ref,
+# superseded ones cancelled: a new push to a branch makes the run already in
+# flight for it pointless. main keys on the commit so a merge's own run is
+# never cancelled by the push that follows it.
+concurrency:
+  group: ci-${{ github.ref == 'refs/heads/main' && github.sha || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # The config generator rejects descriptors that would not fit NVS (key names
+  # are capped at 15 characters), so a bad can.json fails here rather than at
+  # someone's flash step. The generator lives inside espos_config.
+  config-descriptor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - run: |
+          python3 espos/components/espos_config/tools/espos_gen_config.py \
+            --schema-out /tmp/schema.json --c-out /tmp/gen.c --h-out /tmp/keys.h \
+            main/config/can.json
+
+  firmware:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Every chip with a TWAI controller that espOS builds for; the same
+        # list release-firmware.yml ships.
+        target: [esp32c5, esp32, esp32s3, esp32c3, esp32c6, esp32p4]
+    steps:
+      # fetch-depth: 0 because the version baked into the image comes from
+      # `git describe`, and checkout's default depth of 1 fetches no tags in
+      # this repository or in the espOS submodule. Without it describe answers
+      # with a bare hash, espos_version.cmake rejects that and falls back to
+      # version.txt, so every build between two releases claims to BE that
+      # release; and the build log cannot say which espOS is in the image.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          submodules: recursive
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: read pinned IDF version
+        id: idf
+        run: echo "version=$(cat .idf-version)" >> "$GITHUB_OUTPUT"
+
+      # Docker Hub caps anonymous image pulls per runner IP, and the shared
+      # GitHub runners hit that cap often enough to fail whole matrix legs
+      # before they compile. Logging in gives the run an account's own
+      # allowance. Without the variable, or when the login itself fails (a
+      # revoked token, a fork without the secret), the pull is anonymous as
+      # before rather than the leg failing here.
+      - name: log in to Docker Hub
+        if: vars.DOCKERHUB_USERNAME != ''
+        continue-on-error: true
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # CMake generates a throwaway signing key when none is present, which is
+      # right for CI: these images are never released. A real release must
+      # restore the project key from a secret (espos/docs/ota.md) - a build
+      # signed with a per-run key installs over USB and then rejects every OTA.
+      - uses: espressif/esp-idf-ci-action@9d38657f3d789ca759b2b37aaf5ceffbc42c4f0d # v1
+        with:
+          esp_idf_version: ${{ steps.idf.outputs.version }}
+          target: ${{ matrix.target }}
+          command: idf.py build
+
+      # The web UI is a committed bundle in espOS (no Node here); this checks
+      # it was packed into the LittleFS image rather than left out silently.
+      - name: check the UI made it into the image
+        run: test -s build/storage.bin

@@ -1,0 +1,5 @@
+## espos-n2k-gateway app manifest. Everything this firmware links comes from
+## espOS, which pins its own registry dependencies; a copy here could only
+## disagree with them.
+dependencies:
+  idf: ">=6.0.0"

@@ -1,0 +1,24 @@
+menu "NMEA 2000 gateway"
+
+    # Defaults only: the "can" settings page overrides both at runtime, so a
+    # board with other wiring needs no rebuild. -1 there means "use these".
+    config N2K_GW_CAN_TX_GPIO
+        int "Default CAN TX GPIO"
+        default 32 if IDF_TARGET_ESP32
+        default 20 if IDF_TARGET_ESP32P4
+        default 4
+        help
+            GPIO wired to the CAN transceiver's TXD when the tx_pin setting is
+            -1. ESP32: the SH-ESP32 board. ESP32-P4: the Waveshare P4 boards.
+            The others: GPIO 4, free on the common dev kits of those chips.
+
+    config N2K_GW_CAN_RX_GPIO
+        int "Default CAN RX GPIO"
+        default 34 if IDF_TARGET_ESP32
+        default 21 if IDF_TARGET_ESP32P4
+        default 5
+        help
+            GPIO wired to the CAN transceiver's RXD when the rx_pin setting is
+            -1. See the TX pin for where each default comes from.
+
+endmenu

@@ -1,0 +1,44 @@
+language: en-US
+
+reviews:
+  profile: assertive
+  auto_review:
+    enabled: true
+    auto_incremental_review: true
+    drafts: false
+    ignore_title_keywords:
+      - "chore: release"
+    ignore_usernames:
+      - "dependabot[bot]"
+      - "github-actions[bot]"
+
+  path_filters:
+    - "!managed_components/**"
+    - "!build*/**"
+    - "!espos/**"
+
+  path_instructions:
+    - path: "**/*"
+      instructions: |
+        espos-n2k-gateway is ESP-IDF firmware on espOS (the espos/
+        submodule). The NMEA 2000 bus code is espOS's espos_n2k; this repo
+        chooses pins, components, sdkconfig and partition tables per chip.
+        There are no host tests here: the gate is a warning-free build for
+        every target in ci.yml, and behaviour is verified on hardware.
+
+        Flag: a generic fix (bus, WiFi, config, OTA, web UI) made here
+        instead of in espOS; anything that lets a CAN pin land on a flash or
+        PSRAM pin; a partition table change presented as reaching fielded
+        devices by OTA; committed credentials or LAN addresses; comments
+        that restate the code; version bumps outside the release PR; AI
+        attribution in commits or PR text.
+
+knowledge_base:
+  linked_repositories:
+    - repository: signalk-espOS/espOS
+      instructions: >-
+        The runtime pinned as the espos/ submodule: the prologue
+        (cmake/espos_project.cmake), espos_n2k (TwaiReceiver,
+        TwaiTransmitter, CandumpTcpServer, GET /api/v1/n2k), espos_config
+        descriptors, and the reusable build-firmware.yml this repo's release
+        calls with the signing key and Docker Hub secrets.
