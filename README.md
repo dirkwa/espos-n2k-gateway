@@ -1,8 +1,12 @@
-# espos-n2k-gateway
+# espos-nmea-gateway
 
-An NMEA 2000 to Wi-Fi gateway for ESP32 boards, built on
-[espOS](https://github.com/signalk-espOS/espOS). It reads every CAN frame off
-the boat's NMEA 2000 backbone and streams it over TCP in candump format to
+An NMEA to Wi-Fi gateway for ESP32 boards, built on
+[espOS](https://github.com/signalk-espOS/espOS). NMEA 2000 works today; NMEA
+0183 over a serial port is planned as an option beside it, so one board serves
+whichever bus the boat has.
+
+On NMEA 2000 it reads every CAN frame off the boat's backbone and streams it
+over TCP in candump format to
 [signalk-server](https://github.com/SignalK/signalk-server), which decodes it
 with canboatjs. Frames the server sends back go onto the bus.
 
@@ -110,8 +114,8 @@ Needs ESP-IDF exactly `v6.0.3` (pinned in `.idf-version`, equal to the espOS
 submodule's pin) and nothing else: the espOS web UI is a committed bundle.
 
 ```sh
-git clone --recursive https://github.com/dirkwa/espos-n2k-gateway
-cd espos-n2k-gateway
+git clone --recursive https://github.com/dirkwa/espos-nmea-gateway
+cd espos-nmea-gateway
 . ~/esp-idf-v6.0.3/export.sh
 
 # esp32c5 here; esp32 / esp32s3 / esp32c3 / esp32c6 / esp32p4 the same way.
@@ -143,7 +147,8 @@ The repository needs:
 * **Settings → Actions → General → "Allow GitHub Actions to create and approve
   pull requests"**, with read/write workflow permissions, or release-please
   cannot open its pull request.
-* **`N2K_GATEWAY_SIGNING_KEY_PEM`**, the app-signing key. A release built
+* **`N2K_GATEWAY_SIGNING_KEY_PEM`**, the app-signing key (the name dates from
+  before the rename and stays, so existing keys keep working). A release built
   without it uses a throwaway key: it installs over USB and then refuses every
   OTA.
 * Optional: the `DOCKERHUB_USERNAME` variable and the `DOCKERHUB_TOKEN` secret,

@@ -20,7 +20,7 @@ reviews:
   path_instructions:
     - path: "**/*"
       instructions: |
-        espos-n2k-gateway is ESP-IDF firmware on espOS (the espos/
+        espos-nmea-gateway is ESP-IDF firmware on espOS (the espos/
         submodule). The NMEA 2000 bus code is espOS's espos_n2k; this repo
         chooses pins, components, sdkconfig and partition tables per chip.
         There are no host tests here: the gate is a warning-free build for

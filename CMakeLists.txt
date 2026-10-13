@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2026 Dirk Wahrheit
 # SPDX-License-Identifier: Apache-2.0
 #
-# espos-n2k-gateway: a pure ESP-IDF 6 project. WiFi, config, the web UI,
+# espos-nmea-gateway: a pure ESP-IDF 6 project. WiFi, config, the web UI,
 # SignalK discovery, OTA and the NMEA 2000 bus itself come from the espOS
 # submodule (espos/); this project picks the components, the CAN pins and the
 # few sdkconfig lines that differ from espOS's.
@@ -22,11 +22,11 @@ set(_partitions "${ESPOS_PARTITIONS_DIR}/4mb.csv")
 if(IDF_TARGET STREQUAL "esp32c5" OR IDF_TARGET STREQUAL "esp32p4")
     set(_partitions "${ESPOS_PARTITIONS_DIR}/16mb.csv")
 endif()
-espos_project_prologue(NAME "n2k-gateway" PARTITIONS "${_partitions}"
+espos_project_prologue(NAME "nmea-gateway" PARTITIONS "${_partitions}"
                        COMPONENTS espos_n2k espos_eth)
 
-project(n2k_gateway)
+project(nmea_gateway)
 
 # The committed espOS web UI (espos/ui/dist-gz) -> LittleFS "storage" image,
 # flashed with `idf.py flash`. No Node step anywhere.
-espos_project_ui_partition(NAME "n2k-gateway")
+espos_project_ui_partition(NAME "nmea-gateway")

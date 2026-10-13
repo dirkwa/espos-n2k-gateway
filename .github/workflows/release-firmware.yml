@@ -68,7 +68,7 @@ jobs:
       # The chip is in the name because these images are NOT interchangeable
       # and a device cannot tell them apart: espOS matches an update on app,
       # target and channel.
-      name: n2k-gateway-${{ matrix.target }}
+      name: nmea-gateway-${{ matrix.target }}
       tag: ${{ inputs.tag || github.event.release.tag_name }}
       # Distinct per leg: two legs uploading one artifact name is an error on
       # upload-artifact v4+.

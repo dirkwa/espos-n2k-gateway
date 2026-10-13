@@ -1,7 +1,9 @@
-# espos-n2k-gateway
+# espos-nmea-gateway
 
-NMEA 2000 to Wi-Fi gateway firmware on espOS: CAN frames off the bus, out
-over TCP in candump format for signalk-server, and back onto the bus. The bus
+NMEA to Wi-Fi gateway firmware on espOS. Today it bridges NMEA 2000: CAN
+frames off the bus, out over TCP in candump format for signalk-server, and
+back onto the bus. NMEA 0183 over a UART is planned as an option beside it,
+so one firmware serves whichever bus a boat has. The bus
 code is espOS's `espos_n2k` component (the `espos/` submodule); this repo
 picks the pins, the components and the partition table per chip.
 
