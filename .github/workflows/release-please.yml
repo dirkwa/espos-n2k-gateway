@@ -1,0 +1,49 @@
+# Cuts releases from the history, the way espOS does: every push to main
+# refreshes a "chore: release x.y.z" pull request carrying the changelog
+# and the version.txt bump, and merging that PR tags and publishes the
+# release. feat bumps minor, fix bumps patch, a `!` bumps major.
+#
+# A release created here is created with the workflow's own token, and
+# GitHub never lets such an event start another workflow -- so the
+# firmware build, signing and asset upload are called directly rather
+# than left to release-firmware.yml's `release:` trigger.
+name: release-please
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.rp.outputs.release_created }}
+      tag_name: ${{ steps.rp.outputs.tag_name }}
+    steps:
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5
+        id: rp
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  firmware:
+    needs: release-please
+    if: needs.release-please.outputs.release_created == 'true'
+    permissions:
+      contents: write
+    uses: ./.github/workflows/release-firmware.yml
+    with:
+      tag: ${{ needs.release-please.outputs.tag_name }}
+    # `inherit` is load-bearing.
+    #
+    # release-firmware.yml reads `secrets.N2K_GATEWAY_SIGNING_KEY_PEM` by name,
+    # and a repository secret is NOT automatically visible inside a called
+    # workflow -- the caller has to make it available, and `inherit` is what
+    # does that. Remove it and the key reads empty, the build falls back to a
+    # per-run throwaway, and the release installs over USB and then refuses
+    # every OTA. Silently, because an unsigned build still succeeds.
+    secrets: inherit

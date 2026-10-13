@@ -1,0 +1,15 @@
+{
+  "namespace": "can",
+  "version": 1,
+  "title": "NMEA 2000 bus",
+  "description": "The pins the CAN transceiver is wired to. -1 uses this firmware's default for the chip, which the README lists per board. A pin that cannot carry CAN on this chip leaves the bus stopped and says why in the log.",
+  "keys": [
+    {"name": "tx_pin", "type": "int", "default": -1, "min": -1, "max": 63, "restart_required": true,
+     "title": "CAN TX pin", "description": "GPIO wired to the transceiver's TXD (CTX on most modules)."},
+    {"name": "rx_pin", "type": "int", "default": -1, "min": -1, "max": 63, "restart_required": true,
+     "title": "CAN RX pin", "description": "GPIO wired to the transceiver's RXD (CRX on most modules)."},
+    {"name": "transmit", "type": "bool", "default": true, "restart_required": true,
+     "title": "Send to the bus",
+     "description": "Write frames that signalk-server sends onto the bus. Off makes the gateway receive only, for a boat where nothing should ever originate frames from this device."}
+  ]
+}

@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: 2026 Dirk Wahrheit
+# SPDX-License-Identifier: Apache-2.0
+#
+# Only what differs from espOS. espos/cmake/espos_project.cmake puts
+# espos/sdkconfig.d/espos.defaults (+ .<target>) on SDKCONFIG_DEFAULTS ahead
+# of this file, so flash/OTA/signing, logging, the HTTP server and the task
+# stacks are inherited and a line here is an override, never a mirror.
+# Defaults reach a FRESH sdkconfig only: delete build*/sdkconfig after
+# changing anything here or in espOS's fragments.
+
+# A pipe, not a node: signalk-server supplies the identity on the bus, so
+# espos_n2k::Node and the NMEA2000 library stay out of the image. This is
+# espos_n2k's default, stated because turning it on changes what the device
+# is on the bus.
+# CONFIG_ESPOS_N2K_NODE is not set
