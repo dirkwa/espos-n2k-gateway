@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.2.0](https://github.com/dirkwa/espos-nmea-gateway/compare/v0.1.1...v0.2.0) (2026-10-14)
+
+
+### Added
+
+* **release:** ship an image per flash size ([e6641d5](https://github.com/dirkwa/espos-nmea-gateway/commit/e6641d5a8b24a05281a511f319c8dac29f9621ae))
+* **release:** ship an image per flash size ([4bbd7ab](https://github.com/dirkwa/espos-nmea-gateway/commit/4bbd7aba03915f49a1c37d54451edf7b09ace162))
+
+
+### Fixed
+
+* bump espOS to v0.19.0 ([fbf8271](https://github.com/dirkwa/espos-nmea-gateway/commit/fbf82718c1d535c2b2f61fce2d05a461f2106275))
+* bump espOS to v0.19.0 ([3651b34](https://github.com/dirkwa/espos-nmea-gateway/commit/3651b34296fda4ea4c1c2abaa2b80933b4384ee2))
+
 ## [0.1.1](https://github.com/dirkwa/espos-nmea-gateway/compare/v0.1.0...v0.1.1) (2026-10-13)
 
 
