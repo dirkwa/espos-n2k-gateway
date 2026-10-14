@@ -44,7 +44,24 @@ jobs:
       # below still requires them all, so a partial build does not ship.
       fail-fast: false
       matrix:
-        target: [esp32c5, esp32, esp32s3, esp32c3, esp32c6, esp32p4]
+        # flash_tables adds a full-flash image per flash size from the same
+        # build, laid out with espOS's table for that size: dev kits are sold
+        # with 4 to 32 MB, and the flasher writes the largest layout the chip
+        # holds, so bigger boards get bigger app slots. The C3 kits are 4 MB;
+        # the C5 kit and the P4 boards build on the 16 MB table already, and
+        # their 32 MB variants stay on it (flash past 16 MB needs 32-bit
+        # addressing). The OTA image is the same for every size, so a table
+        # whose app slots it would outgrow fails the build.
+        include:
+          - target: esp32c5
+          - target: esp32
+            flash_tables: "4mb 8mb 16mb"
+          - target: esp32s3
+            flash_tables: "4mb 8mb 16mb"
+          - target: esp32c3
+          - target: esp32c6
+            flash_tables: "4mb 8mb"
+          - target: esp32p4
     # @main, matching what espOS documents for this workflow (docs/releasing.md
     # and the workflow's own header). Every THIRD-PARTY action in this repo is
     # SHA-pinned, and that asymmetry is deliberate:
@@ -73,6 +90,7 @@ jobs:
       # Distinct per leg: two legs uploading one artifact name is an error on
       # upload-artifact v4+.
       artifact: firmware-${{ matrix.target }}
+      flash_tables: ${{ matrix.flash_tables || '' }}
     secrets:
       # The repository secret by its own name, rather than declaring it under
       # this file's own `workflow_call.secrets`. That keeps the secret's name in

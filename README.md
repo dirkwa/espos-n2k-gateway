@@ -19,7 +19,10 @@ Wi-Fi.
 
 * **An ESP32 board** with one of the chips below. The ESP32, S3, C3 and C6
   images need 4 MB of flash; the C5 and P4 images use espOS's 16 MB table,
-  which the Waveshare boards they are released for carry.
+  which the Waveshare boards they are released for carry. Releases also carry
+  the ESP32 and S3 images laid out for 8 and 16 MB and the C6 image for 8 MB,
+  and the flasher writes the largest layout your board's flash holds. Boards
+  with 32 MB use the 16 MB layout.
 * **A CAN transceiver** between the board and the bus. The ESP32's CAN
   controller (TWAI) speaks 3.3 V logic and cannot drive the bus's differential
   pair. An SN65HVD230 (or SN65HVD231/232) module runs on 3.3 V and wires as
