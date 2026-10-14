@@ -31,4 +31,7 @@ picks the pins, the components and the partition table per chip.
 - Branch names `feat/…`, `fix/…`, `docs/…`; never commit to `main`.
 - No AI attribution anywhere: no Co-Authored-By, no "Generated with".
 - No version bumps or tags by hand; release-please cuts releases.
+- Squash-merge every PR, the release PR included. release-please reads a
+  merge commit and the branch commits under it as separate changes, so a
+  merge commit lists the change twice and without its PR number.
 - Comments say why, not what.
